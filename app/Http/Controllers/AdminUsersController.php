@@ -2,9 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UsersEditRequest;
+use App\Photo;
+use App\Role;
+use App\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UsersRequest;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 
 class AdminUsersController extends Controller
 {
@@ -15,7 +24,9 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
-        return view('admin.users.index');
+        $users = User::all();
+        
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -25,7 +36,9 @@ class AdminUsersController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $roles = Role::lists('name', 'id')->all();
+
+        return view('admin.users.create', compact('roles'));
     }
 
     /**
@@ -34,9 +47,33 @@ class AdminUsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UsersRequest $request)
     {
-        //
+
+        $input = $request->all();
+        
+        if($file = $request['photo']){
+
+            $name = time() . $file->getClientOriginalName();
+
+            $file->move('images', $name);
+
+            $photo = Photo::create(['path'=>$name]);
+
+            $input['photo_id'] = $photo->id;
+
+        }
+
+        User::create($input);
+
+        return redirect('/admin/users');
+        
+        
+//        User::create($request->all());
+//
+//        return redirect('/admin/users');
+
+//        return $request->all();
     }
 
     /**
@@ -59,7 +96,12 @@ class AdminUsersController extends Controller
     public function edit($id)
     {
         //
-        return view('admin.users.edit');
+
+        $user = User::findOrFail($id);
+
+        $roles = Role::lists('name','id')->all();
+
+        return view('admin.users.edit', compact('user','roles'));
     }
 
     /**
@@ -69,9 +111,47 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UsersEditRequest $request, $id)
     {
         //
+        if(trim($request->password) == ''){
+            $input = $request->except('password');
+        }
+        else{
+            $input = $request->all();
+        }
+
+
+
+        $user = User::findOrFail($id);
+
+        if($file = $request['photo']){
+
+            $name = time() . $file->getClientOriginalName();
+
+            $file->move('images', $name);
+
+            if($user->photo){
+
+                unlink(public_path() . "/images/" . $user->photo->path);
+                $photo = Photo::find($user->photo->id);
+                $photo->update(['path'=>$name]);
+
+            }
+            else{
+
+                $photo = Photo::create(['path'=>$name]);
+                $input['photo_id'] = $photo->id;
+
+            }
+
+        }
+
+        $user->update($input);
+
+        Session::flash('edited_user', 'The user has been modified');
+
+        return redirect('/admin/users');
     }
 
     /**
@@ -82,6 +162,20 @@ class AdminUsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        $user = User::findOrFail($id);
+
+        if($user->photo){
+
+            unlink(public_path() . "/images/" . $user->photo->path);
+            $photo = Photo::find($user->photo->id);
+            $photo->delete();
+//
+        }
+//
+        $user->delete();
+
+        return redirect('/admin/users');
+
     }
 }

@@ -26,6 +26,8 @@
 
 
 
+
+
 </head>
 
 <body id="admin-page">
@@ -45,60 +47,43 @@
         </div>
         <!-- /.navbar-header -->
 
-
+        {{--------------------------------------------------------right side-----------------------------}}
 
         <ul class="nav navbar-top-links navbar-right">
 
-
-            <!-- /.dropdown -->
             <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button">
+                    {{ Auth::user()->name }} <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </li>
+
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                 </ul>
-                <!-- /.dropdown-user -->
             </li>
-            <!-- /.dropdown -->
+
+            {{--------------------------------------------------------/right side-----------------------------}}
+
+
+            {{--<!-- /.dropdown -->--}}
+            {{--<li class="dropdown">--}}
+                {{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">--}}
+                    {{--<i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>--}}
+                {{--</a>--}}
+                {{--<ul class="dropdown-menu dropdown-user">--}}
+                    {{--<li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>--}}
+                    {{--</li>--}}
+                    {{--<li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>--}}
+                    {{--</li>--}}
+                    {{--<li class="divider"></li>--}}
+                    {{--<li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>--}}
+                    {{--</li>--}}
+                {{--</ul>--}}
+                {{--<!-- /.dropdown-user -->--}}
+            {{--</li>--}}
+            {{--<!-- /.dropdown -->--}}
 
 
         </ul>
-
-
-
-
-
-
-        {{--<ul class="nav navbar-nav navbar-right">--}}
-        {{--@if(auth()->guest())--}}
-        {{--@if(!Request::is('auth/login'))--}}
-        {{--<li><a href="{{ url('/auth/login') }}">Login</a></li>--}}
-        {{--@endif--}}
-        {{--@if(!Request::is('auth/register'))--}}
-        {{--<li><a href="{{ url('/auth/register') }}">Register</a></li>--}}
-        {{--@endif--}}
-        {{--@else--}}
-        {{--<li class="dropdown">--}}
-        {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ auth()->user()->name }} <span class="caret"></span></a>--}}
-        {{--<ul class="dropdown-menu" role="menu">--}}
-        {{--<li><a href="{{ url('/auth/logout') }}">Logout</a></li>--}}
-
-        {{--<li><a href="{{ url('/admin/profile') }}/{{auth()->user()->id}}">Profile</a></li>--}}
-        {{--</ul>--}}
-        {{--</li>--}}
-        {{--@endif--}}
-        {{--</ul>--}}
-
-
-
-
 
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
@@ -122,11 +107,11 @@
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>Users<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="/users">All Users</a>
+                                <a href="{{route('admin.users.index')}}">All Users</a>
                             </li>
 
                             <li>
-                                <a href="/users/create">Create User</a>
+                                <a href="{{route('admin.users.create')}}">Create User</a>
                             </li>
 
                         </ul>
@@ -137,11 +122,11 @@
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> Posts<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="/posts">All Posts</a>
+                                <a href="{{route('admin.posts.index')}}">All Posts</a>
                             </li>
 
                             <li>
-                                <a href="/posts/create">Create Post</a>
+                                <a href="{{route('admin.posts.create')}}">Create Post</a>
                             </li>
 
                         </ul>
@@ -352,6 +337,8 @@
 @yield('footer')
 
 <script src="{{asset('js/libs.js')}}"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </body>
 
